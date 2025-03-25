@@ -9,9 +9,10 @@ const networkCtx = networkCanvas.getContext("2d");
 
 const worldString = localStorage.getItem("world");
 const worldInfo = worldString ? JSON.parse(worldString) : null;
-const world = worldInfo
+/*const world = worldInfo
     ? World.load(worldInfo)
     : new World(new Graph());
+    */
 const viewport = new Viewport(carCanvas,world.zoom,world.offset);
 
 
@@ -24,13 +25,21 @@ if(localStorage.getItem("bestBrain")){
             localStorage.getItem("bestBrain")
         );
         if(i!=0){
-            NeuralNetwork.mutate(cars[i].brain,0.3);
+            NeuralNetwork.mutate(cars[i].brain,0.1);
         }
     }
     
 }
 const traffic = [];
+
+let roadBorders = [];
+const target = world.markings.find((m) => m instanceof Target);
+if(target){
+    world.generateCorridor(bestCar,target.center);
+    roadBorders = world.corridor.map((s) => [s.p1,s.p2]);
+}else{
 const roadBorders = world.roadBorders.map((s) => [s.p1,s.p2]);
+}
 
 
 animate();
@@ -54,7 +63,9 @@ function generateCars(N){
     const startAngle = - angle(dir) + Math.PI / 2;
     const cars = [];
     for(let i = 1;i<=N;i++){
-        cars.push(new Car(startPoint.x,startPoint.y,30,50,"AI",startAngle))
+        const car = new Car(startPoint.x,startPoint.y,30,50,"AI",startAngle);
+        car.load(carInfo);
+        cars.push(car)
     }
     return cars;
 }

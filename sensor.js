@@ -4,6 +4,7 @@ class Sensor{
         this.rayCount = 5;
         this.rayLength = 100;
         this.raySpread = Math.PI / 2;
+        this.rayOffset = 0;
 
         this.rays = [] //This stores each individual ray in the array
         this.readings = [];
@@ -58,7 +59,7 @@ class Sensor{
                 this.raySpread/2,
                 -this.raySpread/2,
                 this.rayCount == 1?0.5:i/(this.rayCount-1)
-            ) + this.car.angle
+            ) + this.car.angle + this.rayOffset;
             const start = {x:this.car.x,y:this.car.y}
             const end = {
                 x:this.car.x -  Math.sin(rayAngle)*this.rayLength,
